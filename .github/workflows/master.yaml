@@ -44,7 +44,7 @@ jobs:
     - name: Lambda Update
       uses: ItsKarma/aws-cli@v1.70.0
       with:
-        args: lambda update-function-code --function-name secret-test-go --s3-bucket tf-state-391996659322 --s3-key main.zip
+        args: lambda update-function-code --function-name secretsmanager_eks_sync --s3-bucket tf-state-391996659322 --s3-key main.zip
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

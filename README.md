@@ -6,6 +6,8 @@ A small app written in Golang, that:
 2. which is triggered automatically when there is a change in your AWS Secrets Manager,
 3. so that the secrets in your Secrets Manager are synchronized to your Kubernetes cluster as native K8s Secrets.
 
+[![Go](https://github.com/IronCore864/sm2kubes/actions/workflows/master.yaml/badge.svg)](https://github.com/IronCore864/sm2kubes/actions/workflows/master.yaml)
+
 ## Background
 
 No matter if you use Hashicorp Vault, or AWS Secrets Manager, if your pod in K8s consumes these secrets, there are basically only two ways to do so at the moment:
