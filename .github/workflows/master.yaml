@@ -1,0 +1,51 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15    
+    - name: Test
+      run: go test -v ./...
+
+  deploy:
+    name: S3 Upload
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15    
+    - name: Build
+      run: GOOS=linux GOARCH=amd64 go build -o main main.go
+    - name: Pack
+      run: zip main.zip main
+    - name: S3 Sync
+      uses: ItsKarma/aws-cli@v1.70.0
+      with:
+        args: aws s3 cp main.zip s3://tf-state-391996659322
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: "eu-central-1"
+    - name: Lambda Update
+      uses: ItsKarma/aws-cli@v1.70.0
+      with:
+        args: aws lambda update-function-code --function-name secret-test-go --s3-bucket tf-state-391996659322 --s3-key main.zip
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: "eu-central-1"
