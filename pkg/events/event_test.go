@@ -6,8 +6,8 @@ import (
 
 func TestGetEventNameFromEventStruct(t *testing.T) {
 	tests := map[string]*SecretsManagerRequest{
-		"normal": &SecretsManagerRequest{Detail: Detail{EventName: "CreateSecret"}},
-		"empty":  &SecretsManagerRequest{},
+		"normal": {Detail: Detail{EventName: "CreateSecret"}},
+		"empty":  {},
 	}
 
 	expected := map[string]string{
@@ -24,9 +24,9 @@ func TestGetEventNameFromEventStruct(t *testing.T) {
 }
 func TestGetRequestParametersName(t *testing.T) {
 	tests := map[string]*SecretsManagerRequest{
-		"create": &SecretsManagerRequest{Detail: Detail{RequestParameters: RequestParameters{Name: "name"}}},
-		"update": &SecretsManagerRequest{Detail: Detail{RequestParameters: RequestParameters{SecretID: "id"}}},
-		"empty":  &SecretsManagerRequest{},
+		"create": {Detail: Detail{RequestParameters: RequestParameters{Name: "name"}}},
+		"update": {Detail: Detail{RequestParameters: RequestParameters{SecretID: "id"}}},
+		"empty":  {},
 	}
 
 	expected := map[string]string{

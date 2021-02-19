@@ -33,10 +33,6 @@ func handler(ctx context.Context, event events.SecretsManagerRequest) (string, e
 	if err != nil {
 		return err.Error(), nil
 	}
-	secret, err := sm.GetSecret(originalSecretName, region)
-	if err != nil {
-		return "error getting secret from Secrets Manager", err
-	}
 
 	clientset, err := eks.GetEKSClientSet(clusterName, region)
 	if err != nil {
@@ -51,7 +47,12 @@ func handler(ctx context.Context, event events.SecretsManagerRequest) (string, e
 		}
 	default:
 		// CreateSecret or PutSecretValue
-		err := k8s.UpsertSecret(ctx, clientset, k8sSecretName, namespace, k8s.BuildSecret(secret, k8sSecretName))
+		secret, err := sm.GetSecret(originalSecretName, region)
+		if err != nil {
+			return "error getting secret from Secrets Manager", err
+		}
+
+		err = k8s.UpsertSecret(ctx, clientset, k8sSecretName, namespace, k8s.BuildSecret(secret, k8sSecretName))
 		if err != nil {
 			return fmt.Sprintf("error creating secret %v", err), err
 		}
